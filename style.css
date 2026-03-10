@@ -1,0 +1,297 @@
+:root {
+    --primary: #2ecc71;
+    --secondary: #e74c3c;
+    --accent: #f1c40f;
+    --bg-color: #1a1a1a;
+    --device-color: #2c3e50;
+    --screen-color: #ecf0f1;
+    --text-color: #333;
+    --accent-glow: rgba(46, 204, 113, 0.5);
+    --btn-color: #34495e;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Outfit', sans-serif;
+    background-color: var(--bg-color);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    overflow: hidden;
+}
+
+.vpet-container {
+    perspective: 1000px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.vpet-device {
+    width: 320px;
+    height: 500px;
+    background: radial-gradient(circle at 30% 30%, #34495e, #2c3e50);
+    border-radius: 40px;
+    box-shadow: 
+        0 20px 40px rgba(0,0,0,0.5),
+        inset 0 2px 10px rgba(255,255,255,0.2);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 30px;
+    position: relative;
+    border: 4px solid #1a252f;
+}
+
+.vpet-screen-border {
+    width: 100%;
+    height: 300px;
+    background-color: #1a252f;
+    border-radius: 20px;
+    padding: 10px;
+    box-shadow: inset 0 5px 15px rgba(0,0,0,0.5);
+}
+
+.vpet-screen {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #c3cfd9 0%, #ecf0f1 100%);
+    border-radius: 12px;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Stats */
+.stats-container {
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.stat-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.stat-label {
+    font-family: 'Press Start 2P', cursive;
+    font-size: 8px;
+    color: #2c3e50;
+    opacity: 0.8;
+}
+
+.progress-bar-bg {
+    width: 100%;
+    height: 12px;
+    background: rgba(44, 62, 80, 0.1);
+    border-radius: 6px;
+    overflow: hidden;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.2);
+}
+
+.progress-bar {
+    height: 100%;
+    transition: width 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    border-radius: 6px;
+}
+
+.hunger { background: linear-gradient(to right, #f1c40f, #f39c12); }
+.happiness { background: linear-gradient(to right, #e74c3c, #c0392b); }
+.health { background: linear-gradient(to right, #2ecc71, #27ae60); }
+
+/* Game Area */
+.game-area {
+    flex: 1;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.pet-container {
+    width: 120px;
+    height: 120px;
+    position: relative;
+    z-index: 2;
+}
+
+.pet-sprite svg {
+    width: 100%;
+    height: 100%;
+}
+
+/* Animations */
+@keyframes breathe {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+}
+
+@keyframes vibration {
+    0%, 100% { transform: scale(1.1) rotate(0); }
+    10% { transform: scale(1.1) rotate(3deg); }
+    20% { transform: scale(1.1) rotate(-3deg); }
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    75% { transform: translateX(5px); }
+}
+
+@keyframes floatUp {
+    0% { transform: translateY(0); opacity: 1; }
+    100% { transform: translateY(-50px); opacity: 0; }
+}
+
+.idle-happy { animation: vibration 1s infinite ease-in-out; }
+.idle-stable { animation: breathe 3s infinite ease-in-out; }
+.idle-sad { animation: shake 2s infinite ease-in-out; filter: grayscale(50%); }
+
+.petting-active #pet {
+    animation: vibration 0.2s infinite linear !important;
+    cursor: url('https://emojicdn.elk.sh/💖'), auto;
+}
+
+.petting-active::after {
+    content: "CARINHO!";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-family: 'Press Start 2P', cursive;
+    font-size: 14px;
+    color: var(--secondary);
+    z-index: 10;
+    pointer-events: none;
+    animation: flash 0.5s infinite;
+}
+
+@keyframes flash {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+}
+
+/* Feedback Styling */
+.click-feedback {
+    position: absolute;
+    font-family: 'Press Start 2P', cursive;
+    font-size: 12px;
+    color: var(--secondary);
+    pointer-events: none;
+    z-index: 20;
+    animation: floatUp 1s forwards;
+}
+
+/* Buttons Style */
+.vpet-buttons {
+    margin-top: 30px;
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.vpet-btn {
+    background-color: var(--btn-color);
+    border: none;
+    border-bottom: 4px solid #1a252f;
+    border-radius: 12px;
+    padding: 10px 15px;
+    color: white;
+    cursor: pointer;
+    transition: transform 0.1s, background-color 0.2s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    width: 80px;
+    box-shadow: 0 4px 0 #1a252f;
+}
+
+.vpet-btn:active {
+    transform: translateY(2px);
+    box-shadow: 0 2px 0 #1a252f;
+}
+
+.vpet-btn:hover {
+    background-color: #2c3e50;
+}
+
+.btn-icon { font-size: 20px; }
+.btn-text { font-size: 8px; font-weight: bold; }
+
+/* Overlays */
+.game-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.85);
+    backdrop-filter: blur(8px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 100;
+}
+
+.overlay-content {
+    background: #ecf0f1;
+    padding: 40px;
+    border-radius: 20px;
+    text-align: center;
+    border: 5px solid var(--primary);
+    box-shadow: 0 0 30px var(--accent-glow);
+}
+
+.overlay-content h1 {
+    font-family: 'Press Start 2P', cursive;
+    color: #2c3e50;
+    margin-bottom: 20px;
+}
+
+.restart-btn {
+    margin-top: 20px;
+    background-color: var(--primary);
+    color: white;
+    border: none;
+    padding: 15px 30px;
+    border-radius: 10px;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+/* Helpers */
+.hidden { display: none !important; }
+
+/* Notifications / Evo Timer */
+.evo-timer {
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+    font-family: 'Press Start 2P', cursive;
+    font-size: 6px;
+    color: #2c3e50;
+}
+
+.food-item {
+    position: absolute;
+    cursor: grab;
+    z-index: 5;
+}
+
+.food-item:active { cursor: grabbing; }
+
+.click-feedback {
+    position: absolute;
+    color: #e74c3c;
+    font-weight: bold;
+    pointer-events: none;
+}

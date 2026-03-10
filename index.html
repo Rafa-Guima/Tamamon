@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digital Worm - V-Pet</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700&family=Press+Start+2P&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="vpet-container">
+        <!-- V-Pet Device Frame -->
+        <div class="vpet-device">
+            <div class="vpet-screen-border">
+                <div class="vpet-screen" id="vpet-screen">
+                    <!-- Status Bars -->
+                    <div class="stats-container">
+                        <div class="stat-item">
+                            <span class="stat-label">ALIMENTAÇÃO</span>
+                            <div class="progress-bar-bg">
+                                <div id="hunger-bar" class="progress-bar hunger" style="width: 100%;"></div>
+                            </div>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">FELICIDADE</span>
+                            <div class="progress-bar-bg">
+                                <div id="happiness-bar" class="progress-bar happiness" style="width: 100%;"></div>
+                            </div>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">VIDA</span>
+                            <div class="progress-bar-bg">
+                                <div id="health-bar" class="progress-bar health" style="width: 100%;"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Game Area -->
+                    <div class="game-area" id="game-area">
+                        <div id="pet-container" class="pet-container">
+                            <!-- Pet SVG / Image will be here -->
+                            <div id="pet" class="pet-sprite"></div>
+                        </div>
+                        
+                        <!-- Evolutionary Timer / Notification -->
+                        <div id="notification" class="notification hidden"></div>
+                        
+                        <!-- Drag & Drop Food -->
+                        <div id="food-item" class="food-item hidden" draggable="true">
+                            <svg viewBox="0 0 100 100" width="40" height="40">
+                                <circle cx="50" cy="60" r="30" fill="#f39c12" />
+                                <rect x="35" y="30" width="30" height="30" fill="#e67e22" rx="5" />
+                                <circle cx="45" cy="45" r="5" fill="#d35400" />
+                                <circle cx="55" cy="50" r="5" fill="#d35400" />
+                            </svg>
+                        </div>
+
+                        <!-- Clicker Feedback -->
+                        <div id="click-feedback" class="click-feedback hidden">+2%</div>
+                    </div>
+
+                    <!-- Evolution Progress Overlay -->
+                    <div id="evo-timer-display" class="evo-timer">EVO: 0s</div>
+                </div>
+            </div>
+
+            <!-- Buttons -->
+            <div class="vpet-buttons">
+                <button id="btn-feed" class="vpet-btn" title="Alimentar">
+                    <span class="btn-icon">🍖</span>
+                    <span class="btn-text">ALIMENTAR</span>
+                </button>
+                <button id="btn-pet" class="vpet-btn" title="Carinho">
+                    <span class="btn-icon">💖</span>
+                    <span class="btn-text">CARINHO</span>
+                </button>
+                <button id="btn-restart" class="vpet-btn hidden" title="Reiniciar">
+                    <span class="btn-icon">🔄</span>
+                    <span class="btn-text">REINICIAR</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modals / Overlays -->
+    <div id="overlay" class="game-overlay hidden">
+        <div class="overlay-content">
+            <h1 id="overlay-title">DIGIVOLVE!</h1>
+            <p id="overlay-message">Missão Cumprida!</p>
+            <button id="btn-overlay-restart" class="restart-btn">JOGAR NOVAMENTE</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

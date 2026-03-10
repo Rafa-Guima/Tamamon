@@ -4,8 +4,8 @@
  */
 
 const CONFIG = {
-    DECAY_INTERVAL: 5000, // 5 seconds
-    HP_TICK_INTERVAL: 3000, // 3 seconds
+    DECAY_INTERVAL: 5000,
+    HP_TICK_INTERVAL: 3000,
     HUNGER_DECAY: 2,
     HAPPINESS_DECAY: 3,
     GROWTH_HP: 1,
@@ -13,7 +13,7 @@ const CONFIG = {
     DAMAGE_HP: -2,
     FOOD_RESTORE: 15,
     PET_RESTORE: 2,
-    EVO_REQUIREMENT_TIME: 180, // 180 seconds (3 mins)
+    EVO_REQUIREMENT_TIME: 180, 
     EVO_HP_THRESHOLD: 90,
     SAVE_KEY: 'digital_worm_save_v1'
 };
@@ -24,18 +24,10 @@ const STAGES = {
     DIGIOVO: 'digiovo'
 };
 
-const PET_SVG_MAP = {
-    [STAGES.WORMMON]: {
-        happy: `<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="40" fill="#2ecc71"/><circle cx="35" cy="40" r="5" fill="#fff"/><circle cx="65" cy="40" r="5" fill="#fff"/><path d="M 30 60 Q 50 80 70 60" stroke="#000" stroke-width="3" fill="none"/><path d="M 20 50 Q 10 30 30 20" stroke="#27ae60" stroke-width="5" fill="none"/></svg>`,
-        stable: `<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="40" fill="#27ae60"/><circle cx="35" cy="45" r="4" fill="#000"/><circle cx="65" cy="45" r="4" fill="#000"/><path d="M 40 65 L 60 65" stroke="#000" stroke-width="2" fill="none"/></svg>`,
-        sad: `<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="40" fill="#2c3e50"/><circle cx="35" cy="50" r="3" fill="#fff"/><circle cx="65" cy="50" r="3" fill="#fff"/><path d="M 35 70 Q 50 60 65 70" stroke="#fff" stroke-width="2" fill="none"/></svg>`
-    },
-    [STAGES.STINGMON]: {
-        complete: `<svg viewBox="0 0 100 100"><rect x="30" y="20" width="40" height="60" fill="#2ecc71" rx="10"/><path d="M 20 40 L 40 20 M 80 40 L 60 20" stroke="#27ae60" stroke-width="8"/><circle cx="50" cy="30" r="15" fill="#2c3e50"/><path d="M 40 30 L 45 35 M 60 30 L 55 35" stroke="#f1c40f" stroke-width="2"/></svg>`
-    },
-    [STAGES.DIGIOVO]: {
-        dead: `<svg viewBox="0 0 100 100"><path d="M 50 10 C 20 10 10 50 10 70 C 10 90 30 95 50 95 C 70 95 90 90 90 70 C 90 50 80 10 50 10" fill="#2ecc71"/><path d="M 20 40 L 80 40 M 15 60 L 85 60 M 20 80 L 80 80" stroke="#27ae60" stroke-width="5"/></svg>`
-    }
+const PET_ASSETS = {
+    [STAGES.WORMMON]: 'wormmon.jpg',
+    [STAGES.STINGMON]: 'stingmon.png',
+    [STAGES.DIGIOVO]: 'digiovo.png'
 };
 
 let gameState = {
@@ -46,7 +38,8 @@ let gameState = {
     evoTimer: 0,
     isGameOver: false,
     isVictorious: false,
-    isPettingMode: false
+    isPettingMode: false,
+    isEvolving: false
 };
 
 // DOM elements
@@ -181,10 +174,22 @@ function enterPettingMode() {
 }
 
 function triggerEvolution() {
-    gameState.isVictorious = true;
-    gameState.stage = STAGES.STINGMON;
-    showOverlay('DIGIVOLVE!', 'Missão Cumprida! Seu Wormmon agora é um Stingmon.');
-    elements.btnRestart.classList.remove('hidden');
+    if (gameState.isEvolving || gameState.isVictorious) return;
+    
+    gameState.isEvolving = true;
+    elements.screen.classList.add('evolution-sequence');
+    
+    // Play "Evo" animation
+    setTimeout(() => {
+        gameState.isVictorious = true;
+        gameState.stage = STAGES.STINGMON;
+        gameState.isEvolving = false;
+        elements.screen.classList.remove('evolution-sequence');
+        showOverlay('DIGIVOLVE!', 'Missão Cumprida! Seu Wormmon agora é um Stingmon.');
+        elements.btnRestart.classList.remove('hidden');
+        render();
+        saveGame();
+    }, 4000); // 4 seconds of flash/animation
 }
 
 function triggerGameOver() {
@@ -231,17 +236,14 @@ function render() {
     let avg = (gameState.hunger + gameState.happiness) / 2;
     let mood = avg >= 85 ? 'happy' : (avg >= 50 ? 'stable' : 'sad');
     
-    elements.petContainer.className = 'pet-sprite';
+    // Clear innerHTML since we use IMG now
+    elements.petContainer.innerHTML = `<img src="${PET_ASSETS[gameState.stage]}" alt="${gameState.stage}" style="width:100%; height:100%; border-radius:10px; object-fit: contain;">`;
     
-    if (gameState.stage === STAGES.WORMMON) {
-        elements.petContainer.innerHTML = PET_SVG_MAP[STAGES.WORMMON][mood];
-        elements.petContainer.classList.add(`idle-${mood}`);
-    } else if (gameState.stage === STAGES.STINGMON) {
-        elements.petContainer.innerHTML = PET_SVG_MAP[STAGES.STINGMON].complete;
-        elements.petContainer.classList.add('idle-happy');
-    } else if (gameState.stage === STAGES.DIGIOVO) {
-        elements.petContainer.innerHTML = PET_SVG_MAP[STAGES.DIGIOVO].dead;
-        elements.petContainer.classList.add('idle-sad');
+    elements.petContainer.className = 'pet-sprite';
+    elements.petContainer.classList.add(`idle-${mood}`);
+    
+    if (gameState.isEvolving) {
+        elements.petContainer.classList.add('evolving-shake');
     }
 }
 

@@ -57,7 +57,14 @@ body {
 .vpet-screen {
     width: 100%;
     height: 100%;
-    background: linear-gradient(135deg, #c3cfd9 0%, #ecf0f1 100%);
+    background: 
+        /* Sky */
+        linear-gradient(to bottom, #87ceeb 0%, #e0f6ff 60%),
+        /* Distant Trees Blur */
+        radial-gradient(ellipse at 50% 100%, #2d5a27 0%, transparent 70%),
+        /* Forest Floor / Grass */
+        linear-gradient(to top, #76b13b 0%, #a8d974 40%, transparent 40%);
+    background-size: cover;
     border-radius: 12px;
     position: relative;
     overflow: hidden;
@@ -65,12 +72,57 @@ body {
     flex-direction: column;
 }
 
-/* Stats */
+.vpet-screen::before {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 60%;
+    background-image: 
+        /* Simple Tree Shapes */
+        radial-gradient(circle at 10% 80%, #2d5a27 10%, transparent 10.5%),
+        radial-gradient(circle at 30% 75%, #1e3f19 15%, transparent 15.5%),
+        radial-gradient(circle at 85% 85%, #2d5a27 12%, transparent 12.5%),
+        radial-gradient(circle at 70% 70%, #173213 20%, transparent 20.5%);
+    filter: blur(2px);
+    opacity: 0.6;
+    z-index: 0;
+}
+
+.vpet-screen::after {
+    content: "";
+    position: absolute;
+    top: -20%;
+    left: -20%;
+    width: 140%;
+    height: 140%;
+    background: repeating-linear-gradient(
+        45deg,
+        rgba(255, 255, 255, 0) 0%,
+        rgba(255, 255, 255, 0.05) 5%,
+        rgba(255, 255, 255, 0) 10%
+    );
+    z-index: 1;
+    pointer-events: none;
+    animation: raysMove 10s infinite linear;
+}
+
+@keyframes raysMove {
+    0% { transform: translate(0, 0); }
+    100% { transform: translate(-5%, -5%); }
+}
+
+/* Glassmorphism for Stats to pop over background */
 .stats-container {
     padding: 12px;
     display: flex;
     flex-direction: column;
     gap: 8px;
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(5px);
+    border-bottom: 2px solid rgba(255, 255, 255, 0.3);
+    z-index: 5;
 }
 
 .stat-item {
@@ -266,6 +318,47 @@ body {
     font-weight: bold;
     cursor: pointer;
     font-size: 16px;
+}
+
+/* Evolution Effects */
+.evolution-sequence::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: white;
+    z-index: 50;
+    animation: flashEvo 4s forwards;
+    pointer-events: none;
+}
+
+@keyframes flashEvo {
+    0% { opacity: 0; }
+    20% { opacity: 0.8; }
+    40% { opacity: 0.2; }
+    60% { opacity: 0.9; }
+    80% { opacity: 1; }
+    100% { opacity: 0; }
+}
+
+.evolving-shake {
+    animation: rapidShake 0.1s infinite !important;
+}
+
+@keyframes rapidShake {
+    0% { transform: translate(1px, 1px) rotate(0deg); }
+    10% { transform: translate(-1px, -2px) rotate(-1deg); }
+    20% { transform: translate(-3px, 0px) rotate(1deg); }
+    30% { transform: translate(3px, 2px) rotate(0deg); }
+    40% { transform: translate(1px, -1px) rotate(1deg); }
+    50% { transform: translate(-1px, 2px) rotate(-1deg); }
+    60% { transform: translate(-3px, 1px) rotate(0deg); }
+    70% { transform: translate(3px, 1px) rotate(-1deg); }
+    80% { transform: translate(-1px, -1px) rotate(1deg); }
+    90% { transform: translate(1px, 2px) rotate(0deg); }
+    100% { transform: translate(1px, -2px) rotate(-1deg); }
 }
 
 /* Helpers */

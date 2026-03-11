@@ -25,9 +25,13 @@ const STAGES = {
 };
 
 const PET_ASSETS = {
-    [STAGES.WORMMON]: 'wormmon.jpg',
-    [STAGES.STINGMON]: 'stingmon.png',
-    [STAGES.DIGIOVO]: 'digiovo.png'
+    [STAGES.WORMMON]: {
+        happy: 'Joyfull-Wormmon.png',
+        stable: 'Neutral-Wormmon.png',
+        sad: 'Sad-Wormmon.png'
+    },
+    [STAGES.STINGMON]: 'Stingmon.png',
+    [STAGES.DIGIOVO]: 'DigiOvo.png'
 };
 
 let gameState = {
@@ -52,50 +56,37 @@ const elements = {
     btnFeed: document.getElementById('btn-feed'),
     btnPet: document.getElementById('btn-pet'),
     btnRestart: document.getElementById('btn-restart'),
-    foodItem: document.getElementById('food-item'),
     clickFeedback: document.getElementById('click-feedback'),
     evoTimerDisplay: document.getElementById('evo-timer-display'),
-    overlay: document.getElementById('overlay'),
-    overlayTitle: document.getElementById('overlay-title'),
-    overlayMessage: document.getElementById('overlay-message'),
-    btnOverlayRestart: document.getElementById('btn-overlay-restart'),
-    gameArea: document.getElementById('game-area')
+    notification: document.getElementById('notification'),
+    gameArea: document.getElementById('game-area'),
+    bgMusic: document.getElementById('bg-music')
 };
 
 // Initialization
 function init() {
     loadGame();
     setupEventListeners();
+    setupAudio();
     startGameLoops();
     render();
 }
 
+function setupAudio() {
+    // Attempt to play audio on the first user interaction anywhere on the screen
+    const playAudio = () => {
+        elements.bgMusic.volume = 0.3; // Make it a bit lower volume so it's not deafening
+        elements.bgMusic.play().catch(e => console.log('Audio autoplay prevented'));
+        document.body.removeEventListener('click', playAudio);
+    };
+    document.body.addEventListener('click', playAudio);
+}
+
 function setupEventListeners() {
     // Buttons
-    elements.btnFeed.addEventListener('click', toggleFeedingMode);
+    elements.btnFeed.addEventListener('click', spawnFood);
     elements.btnPet.addEventListener('click', enterPettingMode);
     elements.btnRestart.addEventListener('click', restartGame);
-    elements.btnOverlayRestart.addEventListener('click', restartGame);
-
-    // Drag & Drop
-    elements.foodItem.addEventListener('dragstart', (e) => {
-        e.dataTransfer.setData('text/plain', 'food');
-    });
-
-    elements.petContainer.addEventListener('dragover', (e) => {
-        e.preventDefault();
-    });
-
-    elements.petContainer.addEventListener('drop', (e) => {
-        e.preventDefault();
-        elements.foodItem.classList.add('hidden');
-        if (gameState.isGameOver || gameState.isVictorious) return;
-        
-        updateStat('hunger', CONFIG.FOOD_RESTORE);
-        spawnFeedback('DELÍCIA!', e.clientX, e.clientY);
-        saveGame();
-        render();
-    });
 
     // Petting Clicker
     elements.petContainer.addEventListener('click', (e) => {
@@ -113,6 +104,11 @@ function startGameLoops() {
         if (gameState.isGameOver || gameState.isVictorious) return;
         updateStat('hunger', -CONFIG.HUNGER_DECAY);
         updateStat('happiness', -CONFIG.HAPPINESS_DECAY);
+        
+        if (gameState.hunger <= 0 || gameState.happiness <= 0) {
+            triggerGameOver();
+        }
+
         render();
         saveGame();
     }, CONFIG.DECAY_INTERVAL);
@@ -121,11 +117,21 @@ function startGameLoops() {
     setInterval(() => {
         if (gameState.isGameOver || gameState.isVictorious) return;
         
+        if (gameState.hunger <= 0 || gameState.happiness <= 0) {
+            triggerGameOver();
+            render();
+            saveGame();
+            return;
+        }
+
         let hpChange = 0;
         if (gameState.hunger > 85 && gameState.happiness > 85) {
             hpChange = CONFIG.GROWTH_HP;
         } else if (gameState.hunger < 50 || gameState.happiness < 50) {
-            hpChange = CONFIG.DAMAGE_HP;
+            let penalty = 0;
+            if (gameState.hunger < 50) penalty += Math.floor((50 - gameState.hunger) / 10) + 1;
+            if (gameState.happiness < 50) penalty += Math.floor((50 - gameState.happiness) / 10) + 1;
+            hpChange = -penalty;
         } else {
             hpChange = CONFIG.STABLE_HP;
         }
@@ -156,9 +162,36 @@ function updateStat(stat, amount) {
     gameState[stat] = Math.max(0, Math.min(100, gameState[stat] + amount));
 }
 
-function toggleFeedingMode() {
+function spawnFood() {
     if (gameState.isGameOver || gameState.isVictorious) return;
-    elements.foodItem.classList.toggle('hidden');
+    
+    const food = document.createElement('div');
+    food.className = 'food-item';
+    food.innerHTML = `
+        <svg viewBox="0 0 100 100" width="40" height="40">
+            <circle cx="50" cy="60" r="30" fill="#f39c12" />
+            <rect x="35" y="30" width="30" height="30" fill="#e67e22" rx="5" />
+            <circle cx="45" cy="45" r="5" fill="#d35400" />
+            <circle cx="55" cy="50" r="5" fill="#d35400" />
+        </svg>
+    `;
+    
+    const randomX = Math.floor(Math.random() * 80) + 10;
+    const randomY = Math.floor(Math.random() * 60) + 20;
+    
+    food.style.left = `${randomX}%`;
+    food.style.top = `${randomY}%`;
+    
+    food.addEventListener('click', (e) => {
+        if (gameState.isGameOver || gameState.isVictorious) return;
+        updateStat('hunger', CONFIG.FOOD_RESTORE);
+        spawnFeedback('DELÍCIA!', e.clientX, e.clientY);
+        food.remove();
+        saveGame();
+        render();
+    });
+    
+    elements.gameArea.appendChild(food);
 }
 
 function enterPettingMode() {
@@ -185,8 +218,7 @@ function triggerEvolution() {
         gameState.stage = STAGES.STINGMON;
         gameState.isEvolving = false;
         elements.screen.classList.remove('evolution-sequence');
-        showOverlay('DIGIVOLVE!', 'Missão Cumprida! Seu Wormmon agora é um Stingmon.');
-        elements.btnRestart.classList.remove('hidden');
+        elements.btnRestart.title = "Reiniciar"; // Ensures tooltip still shows
         render();
         saveGame();
     }, 4000); // 4 seconds of flash/animation
@@ -195,17 +227,20 @@ function triggerEvolution() {
 function triggerGameOver() {
     gameState.isGameOver = true;
     gameState.stage = STAGES.DIGIOVO;
-    showOverlay('GAME OVER', 'Seu Wormmon retornou ao estado de ovo.');
-    elements.btnRestart.classList.remove('hidden');
+    showNotification('GAME OVER<br>SEU WORMMON RETORNOU AO ESTADO DE OVO.');
 }
 
-function showOverlay(title, message) {
-    elements.overlayTitle.innerText = title;
-    elements.overlayMessage.innerText = message;
-    elements.overlay.classList.remove('hidden');
+function showNotification(message) {
+    elements.notification.innerHTML = message;
+    elements.notification.classList.remove('hidden');
 }
 
 function restartGame() {
+    if (!gameState.isGameOver && !gameState.isVictorious) {
+        if (!confirm("Tem certeza que deseja reiniciar o jogo? O progresso será perdido.")) {
+            return;
+        }
+    }
     gameState = {
         stage: STAGES.WORMMON,
         hunger: 100,
@@ -216,9 +251,8 @@ function restartGame() {
         isVictorious: false,
         isPettingMode: false
     };
-    elements.overlay.classList.add('hidden');
-    elements.btnRestart.classList.add('hidden');
-    elements.foodItem.classList.add('hidden');
+    elements.notification.classList.add('hidden');
+    document.querySelectorAll('.food-item').forEach(el => el.remove());
     saveGame();
     render();
 }
@@ -236,8 +270,14 @@ function render() {
     let avg = (gameState.hunger + gameState.happiness) / 2;
     let mood = avg >= 85 ? 'happy' : (avg >= 50 ? 'stable' : 'sad');
     
+    // Get correct image source based on stage and mood
+    let imgSrc = PET_ASSETS[gameState.stage];
+    if (gameState.stage === STAGES.WORMMON) {
+        imgSrc = PET_ASSETS[STAGES.WORMMON][mood];
+    }
+
     // Clear innerHTML since we use IMG now
-    elements.petContainer.innerHTML = `<img src="${PET_ASSETS[gameState.stage]}" alt="${gameState.stage}" style="width:100%; height:100%; border-radius:10px; object-fit: contain;">`;
+    elements.petContainer.innerHTML = `<img src="${imgSrc}" alt="${gameState.stage}" style="width:100%; height:100%; border-radius:10px; object-fit: contain;">`;
     
     elements.petContainer.className = 'pet-sprite';
     elements.petContainer.classList.add(`idle-${mood}`);
@@ -268,8 +308,11 @@ function loadGame() {
     const saved = localStorage.getItem(CONFIG.SAVE_KEY);
     if (saved) {
         gameState = JSON.parse(saved);
+        if (gameState.isEvolving) {
+            gameState.isEvolving = false;
+        }
         if (gameState.isGameOver || gameState.isVictorious) {
-            elements.btnRestart.classList.remove('hidden');
+            // Keep game over state rendered instead of handling button visibility here
         }
     }
 }

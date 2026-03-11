@@ -22,72 +22,85 @@ body {
     overflow: hidden;
 }
 
-.vpet-container {
-    perspective: 1000px;
+/* Gameboy Styling */
+.gameboy-body {
+    width: 480px;
+    height: 780px;
+    background-color: #d8d8d8;
+    border-radius: 15px 15px 75px 15px;
+    box-shadow: 
+        inset -7px -7px 22px rgba(255,255,255,0.7), 
+        inset 7px 7px 22px rgba(0,0,0,0.1),
+        15px 15px 45px rgba(0,0,0,0.5);
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    border: 3px solid #b0b0b0;
+    overflow: hidden;
+}
+
+/* Decorative grid lines on gameboy body */
+.gameboy-body::before {
+    content: "";
+    position: absolute;
+    bottom: 30px;
+    right: 30px;
+    width: 90px;
+    height: 30px;
+    background: repeating-linear-gradient(
+        90deg,
+        transparent,
+        transparent 9px,
+        #b0b0b0 9px,
+        #b0b0b0 15px
+    );
+    transform: rotate(-30deg);
+    opacity: 0.5;
+}
+
+.gameboy-screen-bezel {
+    width: 420px;
+    height: 360px;
+    background-color: #555;
+    border-radius: 15px 15px 60px 15px;
     display: flex;
     justify-content: center;
     align-items: center;
-}
-
-.vpet-device {
-    width: 320px;
-    height: 500px;
-    background: radial-gradient(circle at 30% 30%, #34495e, #2c3e50);
-    border-radius: 40px;
-    box-shadow: 
-        0 20px 40px rgba(0,0,0,0.5),
-        inset 0 2px 10px rgba(255,255,255,0.2);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 30px;
+    margin-top: 15px;
+    box-shadow: inset 3px 3px 15px rgba(0,0,0,0.9);
     position: relative;
-    border: 4px solid #1a252f;
+    border-top: 6px solid #777;
+    border-left: 6px solid #777;
+    border-bottom: 6px solid #333;
+    border-right: 6px solid #333;
 }
 
-.vpet-screen-border {
-    width: 100%;
-    height: 300px;
-    background-color: #1a252f;
-    border-radius: 20px;
-    padding: 10px;
-    box-shadow: inset 0 5px 15px rgba(0,0,0,0.5);
+.gameboy-screen-bezel::before {
+    content: "DIGITAL WORM";
+    position: absolute;
+    top: 8px;
+    color: #999;
+    font-family: 'Outfit', sans-serif;
+    font-size: 15px;
+    letter-spacing: 3px;
 }
 
 .vpet-screen {
-    width: 100%;
-    height: 100%;
-    background: 
-        /* Sky */
-        linear-gradient(to bottom, #87ceeb 0%, #e0f6ff 60%),
-        /* Distant Trees Blur */
-        radial-gradient(ellipse at 50% 100%, #2d5a27 0%, transparent 70%),
-        /* Forest Floor / Grass */
-        linear-gradient(to top, #76b13b 0%, #a8d974 40%, transparent 40%);
+    width: 340px;
+    height: 270px;
+    background-color: transparent;
+    background-image: url('background.png');
     background-size: cover;
-    border-radius: 12px;
-    position: relative;
+    background-position: center bottom;
+    background-repeat: no-repeat;
+    border-radius: 3px;
     overflow: hidden;
     display: flex;
     flex-direction: column;
-}
-
-.vpet-screen::before {
-    content: "";
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: 60%;
-    background-image: 
-        /* Simple Tree Shapes */
-        radial-gradient(circle at 10% 80%, #2d5a27 10%, transparent 10.5%),
-        radial-gradient(circle at 30% 75%, #1e3f19 15%, transparent 15.5%),
-        radial-gradient(circle at 85% 85%, #2d5a27 12%, transparent 12.5%),
-        radial-gradient(circle at 70% 70%, #173213 20%, transparent 20.5%);
-    filter: blur(2px);
-    opacity: 0.6;
-    z-index: 0;
+    box-shadow: inset 7px 7px 22px rgba(0,0,0,0.6);
+    position: relative;
 }
 
 .vpet-screen::after {
@@ -115,12 +128,12 @@ body {
 
 /* Glassmorphism for Stats to pop over background */
 .stats-container {
-    padding: 12px;
+    padding: 9px;
     display: flex;
     flex-direction: column;
-    gap: 8px;
-    background: rgba(255, 255, 255, 0.2);
-    backdrop-filter: blur(5px);
+    gap: 6px;
+    background: rgba(255, 255, 255, 0.4);
+    backdrop-filter: blur(2px);
     border-bottom: 2px solid rgba(255, 255, 255, 0.3);
     z-index: 5;
 }
@@ -128,7 +141,7 @@ body {
 .stat-item {
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: 2px;
 }
 
 .stat-label {
@@ -140,17 +153,17 @@ body {
 
 .progress-bar-bg {
     width: 100%;
-    height: 12px;
+    height: 10px;
     background: rgba(44, 62, 80, 0.1);
-    border-radius: 6px;
+    border-radius: 10px;
     overflow: hidden;
-    box-shadow: inset 0 1px 3px rgba(0,0,0,0.2);
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);
 }
 
 .progress-bar {
     height: 100%;
     transition: width 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    border-radius: 6px;
+    border-radius: 10px;
 }
 
 .hunger { background: linear-gradient(to right, #f1c40f, #f39c12); }
@@ -167,10 +180,12 @@ body {
 }
 
 .pet-container {
-    width: 120px;
-    height: 120px;
+    width: 220px;
+    height: 220px;
     position: relative;
     z-index: 2;
+    margin-top: auto;
+    margin-bottom: 10px;
 }
 
 .pet-sprite svg {
@@ -217,7 +232,7 @@ body {
     left: 50%;
     transform: translate(-50%, -50%);
     font-family: 'Press Start 2P', cursive;
-    font-size: 14px;
+    font-size: 20px;
     color: var(--secondary);
     z-index: 10;
     pointer-events: none;
@@ -233,92 +248,90 @@ body {
 .click-feedback {
     position: absolute;
     font-family: 'Press Start 2P', cursive;
-    font-size: 12px;
+    font-size: 18px;
     color: var(--secondary);
     pointer-events: none;
     z-index: 20;
     animation: floatUp 1s forwards;
 }
 
-/* Buttons Style */
-.vpet-buttons {
-    margin-top: 30px;
+/* Gameboy Controls Layout */
+.gameboy-controls {
     display: flex;
-    gap: 15px;
-    justify-content: center;
-    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    margin-top: 90px;
+    padding: 0 40px;
+    box-sizing: border-box;
+    position: relative;
+    z-index: 10;
 }
 
-.vpet-btn {
-    background-color: var(--btn-color);
-    border: none;
-    border-bottom: 4px solid #1a252f;
-    border-radius: 12px;
-    padding: 10px 15px;
-    color: white;
-    cursor: pointer;
-    transition: transform 0.1s, background-color 0.2s;
+.controls-left {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.controls-right {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    gap: 5px;
-    width: 80px;
-    box-shadow: 0 4px 0 #1a252f;
+    gap: 22px;
+    transform: rotate(-15deg);
+    background: #c0c0c0;
+    padding: 22px 22px 22px 30px;
+    border-radius: 60px;
+    box-shadow: inset 3px 3px 8px rgba(0,0,0,0.1), inset -3px -3px 8px rgba(255,255,255,0.8);
 }
 
-.vpet-btn:active {
-    transform: translateY(2px);
-    box-shadow: 0 2px 0 #1a252f;
-}
-
-.vpet-btn:hover {
-    background-color: #2c3e50;
-}
-
-.btn-icon { font-size: 20px; }
-.btn-text { font-size: 8px; font-weight: bold; }
-
-/* Overlays */
-.game-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0,0,0,0.85);
-    backdrop-filter: blur(8px);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 100;
-}
-
-.overlay-content {
-    background: #ecf0f1;
-    padding: 40px;
-    border-radius: 20px;
-    text-align: center;
-    border: 5px solid var(--primary);
-    box-shadow: 0 0 30px var(--accent-glow);
-}
-
-.overlay-content h1 {
-    font-family: 'Press Start 2P', cursive;
-    color: #2c3e50;
-    margin-bottom: 20px;
-}
-
-.restart-btn {
-    margin-top: 20px;
-    background-color: var(--primary);
-    color: white;
-    border: none;
-    padding: 15px 30px;
-    border-radius: 10px;
-    font-weight: bold;
+/* Digivice Button Styles */
+.digivice-btn {
+    background: radial-gradient(circle at 35% 35%, #5dade2, #2471a3);
+    border: 2px solid #1a5276;
+    box-shadow: 
+        inset 0px 4px 6px rgba(255,255,255,0.5),
+        inset 0px -4px 6px rgba(0,0,0,0.5),
+        2px 6px 8px rgba(0,0,0,0.4);
     cursor: pointer;
-    font-size: 16px;
+    transition: all 0.1s ease;
+    outline: none;
+    position: relative;
 }
+
+.digivice-btn::after {
+    content: "";
+    position: absolute;
+    top: 10%;
+    left: 15%;
+    width: 30%;
+    height: 30%;
+    background: radial-gradient(circle at center, rgba(255,255,255,0.8), transparent);
+    border-radius: 50%;
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+.digivice-btn:active {
+    box-shadow: 
+        inset 0px 6px 10px rgba(0,0,0,0.8),
+        inset 0px -2px 4px rgba(255,255,255,0.2),
+        0px 2px 2px rgba(0,0,0,0.3);
+    transform: translateY(4px);
+}
+
+.btn-round {
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+}
+
+.btn-pill {
+    width: 90px;
+    height: 42px;
+    border-radius: 21px;
+}
+
 
 /* Evolution Effects */
 .evolution-sequence::before {
@@ -367,20 +380,44 @@ body {
 /* Notifications / Evo Timer */
 .evo-timer {
     position: absolute;
-    bottom: 5px;
-    right: 5px;
+    bottom: 8px;
+    right: 8px;
     font-family: 'Press Start 2P', cursive;
-    font-size: 6px;
+    font-size: 9px;
     color: #2c3e50;
+}
+
+.notification {
+    position: absolute;
+    top: 10%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.75);
+    color: white;
+    padding: 15px;
+    border-radius: 10px;
+    font-family: 'Press Start 2P', cursive;
+    font-size: 14px;
+    text-align: center;
+    line-height: 1.5;
+    z-index: 50;
+    width: 85%;
 }
 
 .food-item {
     position: absolute;
-    cursor: grab;
-    z-index: 5;
+    cursor: pointer;
+    z-index: 10;
+    transition: transform 0.1s;
+    animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
-.food-item:active { cursor: grabbing; }
+@keyframes popIn {
+    0% { transform: scale(0); }
+    100% { transform: scale(1); }
+}
+
+.food-item:active { transform: scale(0.8) rotate(-10deg); }
 
 .click-feedback {
     position: absolute;

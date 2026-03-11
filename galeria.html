@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Galeria Digital - Tamamon</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700&family=Press+Start+2P&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-bg: #1a1a2e;
+            --container-bg: #2d2a45;
+            --accent-glow: #6c5ce7;
+            --text-main: #f5f6fa;
+            --text-muted: #a4b0be;
+            --card-bg: rgba(255, 255, 255, 0.05);
+            --card-border: rgba(255, 255, 255, 0.1);
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: var(--primary-bg);
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(108, 92, 231, 0.2) 0%, transparent 50%),
+                radial-gradient(circle at 90% 80%, rgba(0, 210, 211, 0.2) 0%, transparent 50%);
+            color: var(--text-main);
+            font-family: 'Outfit', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        header {
+            text-align: center;
+            padding: 2rem 1rem;
+            width: 100%;
+            background: linear-gradient(180deg, rgba(26,26,46,0.9) 0%, transparent 100%);
+        }
+
+        h1 {
+            font-family: 'Press Start 2P', cursive;
+            font-size: 1.8rem;
+            margin: 0;
+            color: #fff;
+            text-shadow: 0 0 10px var(--accent-glow), 0 0 20px var(--accent-glow);
+            letter-spacing: 2px;
+        }
+
+        p.subtitle {
+            margin-top: 1rem;
+            color: var(--text-muted);
+            font-size: 1.1rem;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 1rem;
+            padding: 0.8rem 1.5rem;
+            background: rgba(255,255,255,0.1);
+            color: #fff;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(5px);
+            border: 1px solid var(--card-border);
+        }
+
+        .back-link:hover {
+            background: rgba(255,255,255,0.2);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(108, 92, 231, 0.4);
+        }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            padding: 2rem;
+            max-width: 1200px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 20px;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s ease;
+            backdrop-filter: blur(10px);
+            overflow: hidden;
+            position: relative;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, transparent 100%);
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.5), 0 0 20px rgba(108, 92, 231, 0.3);
+            border-color: rgba(255,255,255,0.3);
+        }
+
+        .img-container {
+            width: 100%;
+            aspect-ratio: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 1rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .card img {
+            max-width: 90%;
+            max-height: 90%;
+            object-fit: contain;
+            filter: drop-shadow(0 10px 15px rgba(0,0,0,0.4));
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover img {
+            transform: scale(1.1);
+        }
+
+        .card h2 {
+            margin: 0;
+            font-size: 1.4rem;
+            color: #fff;
+            position: relative;
+            z-index: 2;
+            text-align: center;
+        }
+
+        .card p.status {
+            margin: 0.5rem 0 0 0;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Specific glow colors based on the state/image */
+        .card.ovo:hover { box-shadow: 0 15px 30px rgba(0,0,0,0.5), 0 0 20px rgba(46, 204, 113, 0.4); }
+        .card.normal:hover { box-shadow: 0 15px 30px rgba(0,0,0,0.5), 0 0 20px rgba(52, 152, 219, 0.4); }
+        .card.happy:hover { box-shadow: 0 15px 30px rgba(0,0,0,0.5), 0 0 20px rgba(241, 196, 15, 0.4); }
+        .card.sad:hover { box-shadow: 0 15px 30px rgba(0,0,0,0.5), 0 0 20px rgba(155, 89, 182, 0.4); }
+        .card.evolved:hover { box-shadow: 0 15px 30px rgba(0,0,0,0.5), 0 0 20px rgba(231, 76, 60, 0.4); }
+
+        footer {
+            margin-top: auto;
+            padding: 2rem;
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            h1 { font-size: 1.3rem; }
+            .gallery-grid { grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>My Digital Monsters</h1>
+        <p class="subtitle">Galeria de Sprites e Evoluções</p>
+        <a href="index.html" class="back-link">⬅ Voltar para o Jogo</a>
+    </header>
+
+    <div class="gallery-grid">
+        
+        <!-- DigiOvo -->
+        <div class="card ovo">
+            <div class="img-container">
+                <img src="DigiOvo.png" alt="DigiOvo">
+            </div>
+            <h2>DigiOvo</h2>
+            <p class="status">Fase: Nascimento</p>
+        </div>
+
+        <!-- Wormmon Normal -->
+        <div class="card normal">
+            <div class="img-container">
+                <img src="Neutral-Wormmon.png" alt="Wormmon Normal">
+            </div>
+            <h2>Wormmon</h2>
+            <p class="status">Humor: Neutro</p>
+        </div>
+
+        <!-- Wormmon Feliz -->
+        <div class="card happy">
+            <div class="img-container">
+                <img src="Joyfull-Wormmon.png" alt="Wormmon Feliz">
+            </div>
+            <h2>Wormmon (Feliz)</h2>
+            <p class="status">Humor: Muito Alegre</p>
+        </div>
+
+        <!-- Wormmon Triste -->
+        <div class="card sad">
+            <div class="img-container">
+                <img src="Sad-Wormmon.png" alt="Wormmon Triste">
+            </div>
+            <h2>Wormmon (Chorando)</h2>
+            <p class="status">Humor: Triste / Faminto</p>
+        </div>
+
+        <!-- Stingmon -->
+        <div class="card evolved">
+            <div class="img-container">
+                <img src="Stingmon.png" alt="Stingmon">
+            </div>
+            <h2>Stingmon</h2>
+            <p class="status">Fase: Evoluído (Campeão)</p>
+        </div>
+
+    </div>
+
+    <footer>
+        Digital Worm &copy; Galeria criada com perfeição.
+    </footer>
+
+</body>
+</html>

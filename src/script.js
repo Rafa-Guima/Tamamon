@@ -26,12 +26,12 @@ const STAGES = {
 
 const PET_ASSETS = {
     [STAGES.WORMMON]: {
-        happy: 'Joyfull-Wormmon.png',
-        stable: 'Neutral-Wormmon.png',
-        sad: 'Sad-Wormmon.png'
+        happy: 'assets/images/Joyfull-Wormmon.png',
+        stable: 'assets/images/Neutral-Wormmon.png',
+        sad: 'assets/images/Sad-Wormmon.png'
     },
-    [STAGES.STINGMON]: 'Stingmon.png',
-    [STAGES.DIGIOVO]: 'DigiOvo.png'
+    [STAGES.STINGMON]: 'assets/images/Stingmon.png',
+    [STAGES.DIGIOVO]: 'assets/images/DigiOvo.png'
 };
 
 let gameState = {
@@ -221,13 +221,14 @@ function triggerEvolution() {
         elements.btnRestart.title = "Reiniciar"; // Ensures tooltip still shows
         render();
         saveGame();
+        showNotification('PARABÉNS! VOCÊ VENCEU!<br>SEU WORMMON DIGIEVOLUIU PARA STINGMON!');
     }, 4000); // 4 seconds of flash/animation
 }
 
 function triggerGameOver() {
     gameState.isGameOver = true;
     gameState.stage = STAGES.DIGIOVO;
-    showNotification('GAME OVER<br>SEU WORMMON RETORNOU AO ESTADO DE OVO.');
+    showNotification('GAME OVER<br>SEU WORMMON RETORNOU AO ESTADO DE OVO. TENTE NOVAMENTE!');
 }
 
 function showNotification(message) {

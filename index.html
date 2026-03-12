@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Digital Worm - V-Pet</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="src/style.css">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700&family=Press+Start+2P&display=swap" rel="stylesheet">
 </head>
 <body>
@@ -52,12 +52,21 @@
             <div class="gameboy-controls">
                 <div class="controls-left">
                     <!-- Digivice round button style -->
-                    <button id="btn-restart" class="digivice-btn btn-round" title="Reiniciar"></button>
+                    <div class="btn-group">
+                        <button id="btn-restart" class="digivice-btn btn-round" title="Reiniciar"></button>
+                        <span class="btn-label">REINICIAR</span>
+                    </div>
                 </div>
                 <div class="controls-right">
                     <!-- Digivice pill buttons style -->
-                    <button id="btn-feed" class="digivice-btn btn-pill btn-pill-top" title="Alimentar"></button>
-                    <button id="btn-pet" class="digivice-btn btn-pill btn-pill-bottom" title="Carinho"></button>
+                    <div class="btn-group">
+                        <span class="btn-label">ALIMENTAR</span>
+                        <button id="btn-feed" class="digivice-btn btn-pill btn-pill-top" title="Alimentar"></button>
+                    </div>
+                    <div class="btn-group">
+                        <span class="btn-label">CARINHO</span>
+                        <button id="btn-pet" class="digivice-btn btn-pill btn-pill-bottom" title="Carinho"></button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -65,8 +74,8 @@
 
 
     <!-- Background Music -->
-    <audio id="bg-music" src="BF - Digimon OST.mp3" loop></audio>
+    <audio id="bg-music" src="assets/audio/BF - Digimon OST.mp3" loop></audio>
 
-    <script src="script.js"></script>
+    <script src="src/script.js"></script>
 </body>
 </html>
